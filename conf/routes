@@ -5,5 +5,100 @@
 # Home page
 GET     /                           controllers.Application.index
 
+#Administrative
+#GET    /admin/configuration        #access all configuration
+
+#POST   /admin/businesshours/:day   #modify business hours for the day
+
+#GET    /admin/hoursoverride        #see all overrides
+#POST   /admin/hoursoverride        #add override hours
+#POST   /admin/hoursoverride/:id    #modify override
+#DELETE /admin/hoursoverride/:id    #delete override
+
+#GET    /admin/closeschedule        #see all closures
+#GET    /admin/closeschedule/:id    #see specific closure
+#POST   /admin/closeschedule        #add closure
+#POST   /admin/closeschedule/:id    #modify closure
+#DELETE /admin/closeschedule/:id    #delete closure
+
+#Products
+#GET    /admin/product              #see all products
+#GET    /admin/product/:id          #see specific product
+#POST   /admin/product              #add product
+#POST   /admin/product/:id          #modify product
+#DELETE /admin/product/:id          #delete product
+
+#Services
+#GET    /admin/service              #see all services
+#GET    /admin/service/:id          #see specific service
+#POST   /admin/service              #add service
+#POST   /admin/service/:id          #modify service
+#POST   /admin/service/:id/product  #add product to service
+#DELETE /admin/service/:id/:product #remove product from service
+#DELETE /admin/service/:id          #delete service
+
+#Service Menu
+#GET    /admin/servicelist          #see all services lists
+#GET    /admin/servicelist/:id      #see specific services list
+#POST   /admin/servicelist          #add services list
+#POST   /admin/servicelist/:id      #modify services list
+#POST   /admin/servicelist/:id/svc  #add service
+#POST   /admin/servicelist/:id/:svc #modify service
+#DELETE /admin/servicelist/:id/:svc #remove service from list
+#DELETE /admin/servicelist/:id      #delete services list
+
+#Room
+#GET    /admin/room                 #see all rooms
+#GET    /admin/room/:id             #see specific room
+#POST   /admin/room                 #add room
+#POST   /admin/room/:id             #modify room
+#POST   /admin/room/:id/svc         #add service to room
+#DELETE /admin/room/:id/:svc        #remove service from room
+#DELETE /admin/room/:id             #delete room
+
+#Stylist
+#GET    /admin/stylist              #see all stylists
+#GET    /admin/stylist/:id          #see specific stylist
+#POST   /admin/stylist              #add stylist
+#POST   /admin/stylist/:id          #modify stylist
+#POST   /admin/stylist/:id/svc      #add service to stylist
+#DELETE /admin/stylist/:id/:svc     #remove service from stylist
+#DELETE /admin/stylist/:id          #delete stylist
+
+#Stylist Schedule
+#GET    /admin/schedule             #see all schedules
+#GET    /admin/schedule/stylist/:id #see stylist's schedule
+#GET    /admin/schedule/:id         #see specific schedule
+#POST   /admin/schedule             #add schedule
+#POST   /admin/schedule/:id         #modify schedule
+#DELETE /admin/schedule/:id         #delete schedule
+
+#Internal facing
+#Appointments
+#GET    /appointment                #see all appointments
+#GET    /appointment/:id            #see specific appointment
+#POST   /appointment                #add appointment
+#POST   /appointment/:id            #modify appointment
+#POST   /appointment/:id/svc        #add service to appointment
+#POST   /appointment/:id/:svc       #modify service
+#DELETE /appointment/:id/:svc       #remove service from appointment
+#DELETE /appointment/:id            #delete appointment
+
+#Client
+#GET    /client                     #see all clients
+#GET    /client/:id                 #see specific client
+#POST   /client                     #add client
+#POST   /client/:id                 #modify client
+#DELETE /client/:id                 #delete client
+
+#Client Visit Detail
+#GET    /client/:id/visit           #see all visits for client
+#POST   /client/:id/visit           #add new client visit
+#POST   /client/:id/visit/:vid      #modify client visit
+#POST   /client/:id/visit/:vid/prd  #add product to client visit
+#POST   /client/:id/visit/:vid/:prd #modify product
+#DELETE /client/:id/visit/:vid/:prd #remove product
+#DELETE /client/:id/visit/:vid      #delete client visit
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
