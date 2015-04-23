@@ -37,16 +37,14 @@ object Servicer {
   val fldServices = "services"
   val fldActive = "active"
 
-  implicit object ServicerReader extends BSONDocumentReader[Servicer]{
+  implicit object ServicerReaderWriter extends BSONDocumentReader[Servicer] with  BSONDocumentWriter[Servicer]{
     def read(doc:BSONDocument) = Servicer(
       doc.getAs[BSONObjectID](fldId).get,
       doc.getAs[String](fldName).get,
       doc.getAs[List[BSONObjectID]](fldServices).get,
       doc.getAs[Boolean](fldActive).get
     )
-  }
 
-  implicit object ServicerWriter extends BSONDocumentWriter[Servicer]{
     def write(servicer:Servicer) = BSONDocument(
       fldId -> servicer._id,
       fldName -> servicer.name,
