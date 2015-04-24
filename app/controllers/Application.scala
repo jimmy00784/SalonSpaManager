@@ -1,32 +1,13 @@
 package controllers
 
-//import models.{Servicer, Room}
-import play.api._
 import play.api.mvc._
-import play.modules.reactivemongo.MongoController
-import reactivemongo.api.collections.default._
-import reactivemongo.bson._
-import scala.concurrent.ExecutionContext.Implicits.global
-import models.Servicer._
 
-import scala.concurrent._
+object Application extends Controller {
 
-object Application extends Controller with MongoController {
+  def index = Action {
 
-  lazy val collappt = db("appointments")
+    Ok(views.html.index())
 
-  def index = Action.async {
-
-    //val x:BSONDocument = Servicer(BSONObjectID.generate,"",List(),false)
-
-    collappt.find(BSONDocument("_id" -> "count")).one[BSONDocument].map{
-      case Some(doc) => doc.getAs[Int]("count").getOrElse(0)
-      case None => 0
-    }.map{
-      count =>
-        collappt.save(BSONDocument("_id" -> "count","count" -> (count + 1)))
-        Ok(views.html.index("Your new application is ready.")(count))
-    }
   }
 
 }

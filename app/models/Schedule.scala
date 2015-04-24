@@ -39,8 +39,8 @@ object Schedule {
 
   val form = Form(
     mapping(
-      fldId -> text.verifying(pattern(objectIdRegEx,"constraint.objectId","error.objectId")),
-      fldStylist -> text.verifying(pattern(objectIdRegEx,"constraint.objectId","error.objectId")),
+      fldId -> objectId,
+      fldStylist -> objectId,
       fldFrom -> date,
       fldTo -> date
     )(

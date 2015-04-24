@@ -22,11 +22,11 @@ GET     /                           controllers.Application.index
 #DELETE /admin/closeschedule/:id    #delete closure
 
 #Products
-#GET    /admin/product              #see all products
-#GET    /admin/product/:id          #see specific product
-#POST   /admin/product              #add product
-#POST   /admin/product/:id          #modify product
-#DELETE /admin/product/:id          #delete product
+GET    /admin/product              controllers.Product.index
+GET    /admin/product/:id          controllers.Product.get(id:String)
+POST   /admin/product              controllers.Product.add
+POST   /admin/product/:id          controllers.Product.modify(id:String)
+DELETE /admin/product/:id          controllers.Product.delete(id:String)
 
 #Services
 #GET    /admin/service              #see all services
@@ -101,4 +101,5 @@ GET     /                           controllers.Application.index
 #DELETE /client/:id/visit/:vid      #delete client visit
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /*file                      controllers.Assets.at(path="/public", file)
+GET     /webjars/*file              controllers.WebJarAssets.at(file)
