@@ -29,13 +29,13 @@ POST   /admin/product/:id          controllers.Product.modify(id:String)
 DELETE /admin/product/:id          controllers.Product.delete(id:String)
 
 #Services
-#GET    /admin/service              #see all services
-#GET    /admin/service/:id          #see specific service
-#POST   /admin/service              #add service
-#POST   /admin/service/:id          #modify service
-#POST   /admin/service/:id/product  #add product to service
-#DELETE /admin/service/:id/:product #remove product from service
-#DELETE /admin/service/:id          #delete service
+GET    /admin/service              controllers.Service.index
+GET    /admin/service/:id          controllers.Service.get(id:String)
+POST   /admin/service              controllers.Service.add
+POST   /admin/service/:id          controllers.Service.modify(id:String)
+POST   /admin/service/:id/:product controllers.Service.addproduct(id:String,product:String)
+DELETE /admin/service/:id/:product controllers.Service.delproduct(id:String,product:String)
+DELETE /admin/service/:id          controllers.Service.delete(id:String)
 
 #Service Menu
 #GET    /admin/servicelist          #see all services lists

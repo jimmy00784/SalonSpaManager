@@ -1,0 +1,61 @@
+<h2>Service</h2>
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2">Name</label>
+        <div class="col-sm-4">
+            <input class="form-control" ng-model="service.name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Description</label>
+        <div class="col-sm-4">
+            <input class="form-control" ng-model="service.desc"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Duration (mins)</label>
+        <div class="col-sm-4">
+            <input class="form-control" ng-model="service.duration"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Active</label>
+        <div class="col-sm-4">
+            <input type="checkbox" class="checkbox" ng-model="service.active"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2">Products</label>
+        <div class="col-sm-10">
+            <div ng-repeat="product in products">
+                {{ product.name }}
+                <button class="btn btn-default" ng-click="removeprod(product._id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <select ng-model="newprod" class="form-control">
+                <optgroup label="Select product to add">
+                    <option ng-repeat="prod in unusedproducts()" value="{{ prod._id }}">{{ prod.name }}</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-sm-7">
+            <button class="btn btn-default" ng-click="addproduct(newprod)" ng-show="newprod != undefined">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <button class="btn btn-default" ng-click="save()">Save</button>
+        </div>
+    </div>
+</form>

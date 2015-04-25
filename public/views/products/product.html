@@ -1,0 +1,21 @@
+<h2>Product</h2>
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2">Name</label>
+        <div class="col-sm-4">
+            <input class="form-control" ng-model="product.name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Active</label>
+        <div class="col-sm-4">
+            <input class="checkbox" type="checkbox" ng-model="product.active"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <button class="btn btn-default" ng-click="save()">Save</button>
+        </div>
+    </div>
+</form>

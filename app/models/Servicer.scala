@@ -5,6 +5,7 @@ import play.api.data.Forms._
 import play.api.data.format._
 import play.api.data.validation.Constraints._
 import reactivemongo.bson.{BSONDocumentWriter, BSONDocument, BSONDocumentReader, BSONObjectID}
+import play.api.data.format.Formats._
 
 /**
  * Created by karim on 4/22/15.
@@ -12,9 +13,9 @@ import reactivemongo.bson.{BSONDocumentWriter, BSONDocument, BSONDocumentReader,
 
 
 
-case class Servicer (_id:BSONObjectID,
+case class Servicer (_id:String,
                 name: String,
-                services: List[BSONObjectID],
+                services: List[String],
                 active:Boolean)
 
 /*case class Room(override val _id:BSONObjectID,
@@ -39,9 +40,9 @@ object Servicer {
 
   implicit object ServicerReaderWriter extends BSONDocumentReader[Servicer] with  BSONDocumentWriter[Servicer]{
     def read(doc:BSONDocument) = Servicer(
-      doc.getAs[BSONObjectID](fldId).get,
+      doc.getAs[String](fldId).get,
       doc.getAs[String](fldName).get,
-      doc.getAs[List[BSONObjectID]](fldServices).get,
+      doc.getAs[List[String]](fldServices).get,
       doc.getAs[Boolean](fldActive).get
     )
 
@@ -55,22 +56,14 @@ object Servicer {
 
   val form = Form(
     mapping(
-      fldId -> text.verifying(pattern(
-        objectIdRegEx,
-        "constraint.objectId",
-        "error.objectId"
-      )),
+      fldId -> optional(of[String].verifying(objectIdPattern)),
       fldName -> nonEmptyText,
-      fldServices -> list(text.verifying(pattern(
-        Common.objectIdRegEx,
-        "constraint.objectId",
-        "error.objectId"
-      ))),
+      fldServices -> list(objectId),
       fldActive -> boolean
     )(
-        (_id, name, services, active) => Servicer(_id,name,services,active)
+        (_id, name, services, active) => Servicer(_id.getOrElse(BSONObjectID.generate.stringify),name,services,active)
       )(
-        servicer => Some(servicer._id.stringify,servicer.name,servicer.services.map(_.stringify),servicer.active)
+        servicer => Some(Some(servicer._id),servicer.name,servicer.services,servicer.active)
       )
   )
 }

@@ -2,6 +2,8 @@ package models
 
 import play.api.data._
 import play.api.data.Forms._
+import play.api.data.format._
+import play.api.data.format.Formats._
 import play.api.data.validation.Constraints._
 import reactivemongo.bson.{BSONDocumentWriter, BSONDocument, BSONDocumentReader, BSONObjectID}
 import ImplicitConversions._
@@ -9,8 +11,8 @@ import Common._
 /**
  * Created by karim on 4/22/15.
  */
-case class Schedule (_id:BSONObjectID,
-                     stylist:BSONObjectID,
+case class Schedule (_id:String,
+                     stylist:String,
                      from:java.util.Date,
                      to:java.util.Date)
 
@@ -22,8 +24,8 @@ object Schedule {
 
   implicit object ScheduleReader extends BSONDocumentReader[Schedule]{
     def read(doc:BSONDocument) = Schedule(
-      doc.getAs[BSONObjectID](fldId).get,
-      doc.getAs[BSONObjectID](fldStylist).get,
+      doc.getAs[String](fldId).get,
+      doc.getAs[String](fldStylist).get,
       doc.getAs[java.util.Date](fldFrom).get,
       doc.getAs[java.util.Date](fldTo).get
     )
@@ -39,14 +41,14 @@ object Schedule {
 
   val form = Form(
     mapping(
-      fldId -> objectId,
+      fldId -> optional(of[String].verifying(objectIdPattern)),
       fldStylist -> objectId,
       fldFrom -> date,
       fldTo -> date
     )(
-        (_id,stylist,from,to) => Schedule(_id,stylist,from,to)
+        (_id,stylist,from,to) => Schedule(_id.getOrElse(BSONObjectID.generate.stringify) ,stylist,from,to)
       )(
-        schedule => Some(schedule._id.stringify,schedule.stylist.stringify,schedule.from,schedule.to)
+        schedule => Some(Some(schedule._id),schedule.stylist,schedule.from,schedule.to)
       )
   )
 }

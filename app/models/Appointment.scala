@@ -6,12 +6,13 @@ import play.api.data.validation.Constraints._
 import reactivemongo.bson.{BSONDocument, BSONDocumentWriter, BSONDocumentReader, BSONObjectID}
 import Common._
 import ImplicitConversions._
+import play.api.data.format.Formats._
 
 /**
  * Created by karim on 4/22/15.
  */
-case class AppointmentRequest (service:BSONObjectID,
-                        stylist:Option[BSONObjectID])
+case class AppointmentRequest (service:String,
+                        stylist:Option[String])
 
 object AppointmentRequest{
   val fldService = "service"
@@ -19,8 +20,8 @@ object AppointmentRequest{
 
   implicit object AppointmentRequestReaderWriter extends BSONDocumentReader[AppointmentRequest] with BSONDocumentWriter[AppointmentRequest]{
     def read(doc:BSONDocument) = AppointmentRequest(
-      doc.getAs[BSONObjectID](fldService).get,
-      doc.getAs[BSONObjectID](fldStylist)
+      doc.getAs[String](fldService).get,
+      doc.getAs[String](fldStylist)
     )
     def write(ar:AppointmentRequest) = {
       val doc = BSONDocument(fldService -> ar.service)
@@ -35,17 +36,13 @@ object AppointmentRequest{
     mapping(
       fldService -> objectId,
       fldService -> optional(objectId)
-    )(
-        (service,stylist) => AppointmentRequest(service,stylist)
-      )(
-      ar => Some(ar.service.stringify,ar.stylist.map(_.stringify))
-      )
+    )(AppointmentRequest.apply)(AppointmentRequest.unapply)
   )
 }
 
-case class Appointment (_id:BSONObjectID,
+case class Appointment (_id:String,
                         date:java.util.Date,
-                        client:BSONObjectID,
+                        client:String,
                         services:List[AppointmentRequest],
                         walkin:Boolean,
                         notes:String)
@@ -61,16 +58,16 @@ object Appointment{
 
   val form = Form(
     mapping(
-      fldId -> objectId,
+      fldId -> optional(of[String].verifying(objectIdPattern)),
       fldDate -> date,
       fldClient -> objectId,
       fldServices -> list(AppointmentRequest.form.mapping),
       fldWalkin -> boolean,
       fldNotes -> text
     )(
-        (_id,date,client,services,walkin,notes) => Appointment(_id,date,client,services,walkin,notes)
+        (_id,date,client,services,walkin,notes) => Appointment(_id.getOrElse(BSONObjectID.generate.stringify),date,client,services,walkin,notes)
       )(
-      appt => Some(appt._id.stringify,appt.date,appt.client.stringify,appt.services,appt.walkin,appt.notes)
+      appt => Some(Some(appt._id),appt.date,appt.client.stringify,appt.services,appt.walkin,appt.notes)
       )
   )
 }
