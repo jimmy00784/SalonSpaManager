@@ -22,7 +22,16 @@ Features
 
 Technologies
 ------------
-1. Play Framework
-2. Scala
-3. AngularJS
-4. Twitter Bootstrap
+1. [Play Framework] 
+2. [Scala]
+3. [MongoDB]
+4. [ReactiveMongo driver]
+5. [AngularJS]
+6. [Twitter Bootstrap]
+
+[Play Framework]: https://www.playframework.com/ 
+[Scala]: http://www.scala-lang.org/
+[MongoDB]: https://www.mongodb.org/
+[ReactiveMongo driver]: http://reactivemongo.org/
+[AngularJS]: https://www.angularjs.org/
+[Twitter Bootstrap]: http://getbootstrap.com/
