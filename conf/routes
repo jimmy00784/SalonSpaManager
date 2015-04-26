@@ -48,22 +48,22 @@ DELETE /admin/service/:id          controllers.Service.delete(id:String)
 #DELETE /admin/servicelist/:id      #delete services list
 
 #Room
-#GET    /admin/room                 #see all rooms
-#GET    /admin/room/:id             #see specific room
-#POST   /admin/room                 #add room
-#POST   /admin/room/:id             #modify room
-#POST   /admin/room/:id/svc         #add service to room
-#DELETE /admin/room/:id/:svc        #remove service from room
-#DELETE /admin/room/:id             #delete room
+GET    /admin/room                  controllers.Room.index
+GET    /admin/room/:id              controllers.Room.get(id:String)
+POST   /admin/room                  controllers.Room.add
+POST   /admin/room/:id              controllers.Room.modify(id:String)
+POST   /admin/room/:id/:service     controllers.Room.addservice(id:String,service:String)
+DELETE /admin/room/:id/:service     controllers.Room.delservice(id:String,service:String)
+DELETE /admin/room/:id              controllers.Room.delete(id:String)
 
 #Stylist
-#GET    /admin/stylist              #see all stylists
-#GET    /admin/stylist/:id          #see specific stylist
-#POST   /admin/stylist              #add stylist
-#POST   /admin/stylist/:id          #modify stylist
-#POST   /admin/stylist/:id/svc      #add service to stylist
-#DELETE /admin/stylist/:id/:svc     #remove service from stylist
-#DELETE /admin/stylist/:id          #delete stylist
+GET    /admin/stylist               controllers.Stylist.index
+GET    /admin/stylist/:id           controllers.Stylist.get(id:String)
+POST   /admin/stylist               controllers.Stylist.add
+POST   /admin/stylist/:id           controllers.Stylist.modify(id:String)
+POST   /admin/stylist/:id/:service  controllers.Stylist.addservice(id:String,service:String)
+DELETE /admin/stylist/:id/:service  controllers.Stylist.delservice(id:String,service:String)
+DELETE /admin/stylist/:id           controllers.Stylist.delete(id:String)
 
 #Stylist Schedule
 #GET    /admin/schedule             #see all schedules

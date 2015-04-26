@@ -1,0 +1,47 @@
+<h2>Room</h2>
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2">Name</label>
+        <div class="col-sm-4">
+            <input class="form-control" ng-model="room.name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Active</label>
+        <div class="col-sm-4">
+            <input class="checkbox" type="checkbox" ng-model="room.active"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2">Services</label>
+        <div class="col-sm-10">
+            <div ng-repeat="service in services">
+                {{ service.name }}
+                <button class="btn btn-default" ng-click="removeservice(service._id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <select ng-model="newservice" class="form-control">
+                <optgroup label="Select service to add">
+                    <option ng-repeat="service in unusedservices()" value="{{ service._id }}">{{ service.name }}</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-sm-7">
+            <button class="btn btn-default" ng-click="addservice(newservice)" ng-show="newservice != undefined">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <button class="btn btn-default" ng-click="save()">Save</button>
+        </div>
+    </div>
+</form>

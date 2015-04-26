@@ -18,3 +18,19 @@ ssmSvc.factory "Service", ($resource) ->
                 add: { method: 'POST'}
             })
     }
+
+ssmSvc.factory "Room", ($resource) ->
+    $resource '/admin/room/:id/:svcid',{},{
+        all: { method: 'GET',isArray: true},
+        add: { method: 'POST'},
+        addservice: { method: 'POST', isArray: true},
+        delservice: { method: 'DELETE', isArray: true}
+    }
+
+ssmSvc.factory "Stylist", ($resource) ->
+    $resource '/admin/stylist/:id/:svcid',{},{
+        all: { method: 'GET',isArray: true},
+        add: { method: 'POST'},
+        addservice: { method: 'POST', isArray: true},
+        delservice: { method: 'DELETE', isArray: true}
+    }

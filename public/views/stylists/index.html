@@ -1,0 +1,32 @@
+<h2>Stylists</h2>
+<table class="table">
+    <tr>
+        <th>Stylist</th>
+        <th>Active</th>
+        <th>Remove</th>
+    </tr>
+    <tr ng-repeat="stylist in stylists">
+        <td><a href="#/stylist/{{stylist._id}}">{{ stylist.name }}</a></td>
+        <td><span class="glyphicon glyphicon-ok" ng-show="stylist.active"></span></td>
+        <td>
+            <button class="btn btn-default" ng-click="remove(stylist._id)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </td>
+    </tr>
+</table>
+<form class="form-inline">
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" placeholder="Enter stylist name" ng-model="newstylist.name"/>
+    </div>
+    <div class="form-group">
+        <label>Active</label>
+        <div class="checkbox">
+            <input type="checkbox" ng-model="newstylist.active"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-default" ng-click="add(newstylist);newstylist={};">Add</button>
+    </div>
+</form>

@@ -152,12 +152,12 @@ object Client {
       fldFirstName -> text,
       fldLastName -> text,
       fldPhone -> list(text),
-      fldEmail -> list(email),
-      fldHistory -> list(Visit.form.mapping)
+      fldEmail -> list(email)//,
+      //fldHistory -> list(Visit.form.mapping)
     )(
-        (_id,firstname,lastname,phone,email,history) => Client(_id.getOrElse(BSONObjectID.generate.stringify),firstname,lastname,phone,email,history)
+        (_id,firstname,lastname,phone,email/*,history*/) => Client(_id.getOrElse(BSONObjectID.generate.stringify),firstname,lastname,phone,email,/*history*/List())
       )(
-    client => Some(Some(client._id),client.firstname,client.lastname,client.phone,client.email,client.history)
+    client => Some(Some(client._id),client.firstname,client.lastname,client.phone,client.email/*,client.history*/)
       )
   )
 }
