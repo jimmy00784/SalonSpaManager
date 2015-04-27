@@ -85,20 +85,25 @@ DELETE /admin/stylist/:id           controllers.Stylist.delete(id:String)
 #DELETE /appointment/:id            #delete appointment
 
 #Client
-#GET    /client                     #see all clients
-#GET    /client/:id                 #see specific client
-#POST   /client                     #add client
-#POST   /client/:id                 #modify client
-#DELETE /client/:id                 #delete client
+GET    /client                      controllers.Client.index
+GET    /client/:id                  controllers.Client.get(id:String)
+POST   /client                      controllers.Client.add
+POST   /client/:id                  controllers.Client.modify(id:String)
+DELETE /client/:id                  controllers.Client.remove(id:String)
+
+POST   /client/:id/phone/:phone     controllers.Client.addphone(id:String,phone:String)
+DELETE /client/:id/phone/:phoneid   controllers.Client.delphone(id:String,phoneid:Int)
+POST   /client/:id/email/:email     controllers.Client.addemail(id:String,email:String)
+DELETE /client/:id/email/:emailid   controllers.Client.delemail(id:String,emailid:Int)
 
 #Client Visit Detail
-#GET    /client/:id/visit           #see all visits for client
-#POST   /client/:id/visit           #add new client visit
-#POST   /client/:id/visit/:vid      #modify client visit
-#POST   /client/:id/visit/:vid/prd  #add product to client visit
-#POST   /client/:id/visit/:vid/:prd #modify product
-#DELETE /client/:id/visit/:vid/:prd #remove product
-#DELETE /client/:id/visit/:vid      #delete client visit
+GET    /client/:id/visit            controllers.Client.getvisits(id:String)
+POST   /client/:id/visit            controllers.Client.addvisit(id:String)
+POST   /client/:id/visit/:vid       controllers.Client.modvisit(id:String,vid:Int)
+POST   /client/:id/visit/:vid/product       controllers.Client.addproduct(id:String,vid:Int)
+POST   /client/:id/visit/:vid/product/:prd  controllers.Client.modproduct(id:String,vid:Int,prd:Int)
+DELETE /client/:id/visit/:vid/product/:prd  controllers.Client.delproduct(id:String,vid:Int,prd:Int)
+DELETE /client/:id/visit/:vid       controllers.Client.delvisit(id:String,vid:Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /*file                      controllers.Assets.at(path="/public", file)

@@ -3,6 +3,7 @@ package models
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.Json
 import reactivemongo.bson.{BSONDocument, BSONDocumentWriter, BSONDocumentReader, BSONObjectID}
 import Common._
 import ImplicitConversions._
@@ -17,6 +18,8 @@ case class ProductQuantity(product:String,
 object ProductQuantity {
   val fldProduct = "product"
   val fldQuantity = "quantity"
+
+  implicit val jsonFormat = Json.format[ProductQuantity]
 
   implicit object ProductQuantityReaderWriter extends BSONDocumentReader[ProductQuantity] with BSONDocumentWriter[ProductQuantity]{
     def read(doc:BSONDocument) = ProductQuantity(
@@ -53,6 +56,8 @@ object VisitDetail {
   val fldRoom = "room"
   val fldProducts = "products"
   val fldNotes = "notes"
+
+  implicit val jsonFormat = Json.format[VisitDetail]
 
   implicit object VisitDetailReaderWriter extends BSONDocumentReader[VisitDetail] with BSONDocumentWriter[VisitDetail]{
     def read(doc:BSONDocument) = VisitDetail(
@@ -93,6 +98,8 @@ object Visit {
   val fldDate = "date"
   val fldDetails = "details"
 
+  implicit val jsonFormat = Json.format[Visit]
+
   implicit object VisitReaderWriter extends BSONDocumentReader[Visit] with BSONDocumentWriter[Visit]{
     def read(doc:BSONDocument) = Visit(
       doc.getAs[java.util.Date](fldDate).get,
@@ -126,6 +133,8 @@ object Client {
   val fldPhone = "phone"
   val fldEmail = "email"
   val fldHistory = "history"
+
+  implicit val jsonFormat = Json.format[Client]
 
   implicit object ClientReaderWriter extends BSONDocumentReader[Client] with BSONDocumentWriter[Client]{
     def read(doc: BSONDocument) = Client(
