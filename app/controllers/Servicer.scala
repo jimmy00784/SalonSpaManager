@@ -27,6 +27,12 @@ class Servicer(val collection:String) extends Controller with MongoController{
     }
   }
 
+  def getbyservice(svcid:String) = Action.async {
+    coll.find(BSONDocument("services" -> svcid)).cursor[models.Servicer].collect[List]().map{
+      servicers => Ok(Json.toJson(servicers))
+    }
+  }
+
   def add = Action.async { implicit request =>
     models.Servicer.form.bindFromRequest().fold(
       hasErrors => Future successful BadRequest(hasErrors.errorsAsJson),

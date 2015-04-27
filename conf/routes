@@ -55,6 +55,7 @@ POST   /admin/room/:id              controllers.Room.modify(id:String)
 POST   /admin/room/:id/:service     controllers.Room.addservice(id:String,service:String)
 DELETE /admin/room/:id/:service     controllers.Room.delservice(id:String,service:String)
 DELETE /admin/room/:id              controllers.Room.delete(id:String)
+GET    /admin/room/forservice/:svcid    controllers.Room.getbyservice(svcid:String)
 
 #Stylist
 GET    /admin/stylist               controllers.Stylist.index
@@ -64,6 +65,7 @@ POST   /admin/stylist/:id           controllers.Stylist.modify(id:String)
 POST   /admin/stylist/:id/:service  controllers.Stylist.addservice(id:String,service:String)
 DELETE /admin/stylist/:id/:service  controllers.Stylist.delservice(id:String,service:String)
 DELETE /admin/stylist/:id           controllers.Stylist.delete(id:String)
+GET    /admin/stylist/forservice/:svcid controllers.Stylist.getbyservice(svcid:String)
 
 #Stylist Schedule
 #GET    /admin/schedule             #see all schedules
@@ -87,6 +89,7 @@ DELETE /admin/stylist/:id           controllers.Stylist.delete(id:String)
 #Client
 GET    /client                      controllers.Client.index
 GET    /client/:id                  controllers.Client.get(id:String)
+GET    /client/search/:name         controllers.Client.getbyname(name:String)
 POST   /client                      controllers.Client.add
 POST   /client/:id                  controllers.Client.modify(id:String)
 DELETE /client/:id                  controllers.Client.remove(id:String)
@@ -98,6 +101,7 @@ DELETE /client/:id/email/:emailid   controllers.Client.delemail(id:String,emaili
 
 #Client Visit Detail
 GET    /client/:id/visit            controllers.Client.getvisits(id:String)
+GET    /client/:id/visit/:vid       controllers.Client.getvisit(id:String,vid:Int)
 POST   /client/:id/visit            controllers.Client.addvisit(id:String)
 POST   /client/:id/visit/:vid       controllers.Client.modvisit(id:String,vid:Int)
 POST   /client/:id/visit/:vid/product       controllers.Client.addproduct(id:String,vid:Int)

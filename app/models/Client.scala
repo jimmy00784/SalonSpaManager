@@ -143,7 +143,7 @@ object Client {
       doc.getAs[String](fldLastName).get,
       doc.getAs[List[String]](fldPhone).get,
       doc.getAs[List[String]](fldEmail).get,
-      doc.getAs[List[Visit]](fldHistory).get
+      doc.getAs[List[Visit]](fldHistory).getOrElse(List())
     )
     def write(client:Client) = BSONDocument(
       fldId -> client._id,

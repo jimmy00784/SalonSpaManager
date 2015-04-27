@@ -41,6 +41,19 @@ ssmApp.config ($routeProvider,$locationProvider) ->
         templateUrl: 'views/clients/index.html',
         controller: 'ClientCtrl'
     }
+    $routeProvider.when '/client/:id', {
+        templateUrl: 'views/clients/client.html',
+        controller: 'ClientCtrl'
+    }
+
+    $routeProvider.when '/client/:id/visit', {
+        templateUrl: 'views/clients/allvisits.html',
+        controller: 'ClientVisitCtrl'
+    }
+    $routeProvider.when '/client/:id/visit/:visit', {
+        templateUrl: 'views/clients/singlevisit.html',
+        controller: 'ClientVisitCtrl'
+    }
 
     true
 

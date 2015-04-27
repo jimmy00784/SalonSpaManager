@@ -1,0 +1,72 @@
+<h2>Client Visit</h2>
+<div class="row">
+    <div class="col-md-3">Name</div>
+    <div class="col-md-9">{{ client.firstname }} {{ client.lastname }}</div>
+    <div class="col-md-3">Phone</div>
+    <div class="col-md-9"><span ng-repeat="phone in client.phone">{{ phone }}&nbsp;</span></div>
+    <div class="col-md-3">Email</div>
+    <div class="col-md-9"><span ng-repeat="phone in client.phone">{{ email }}&nbsp;</span></div>
+</div>
+<div class="row">
+    <h3>Visit History</h3>
+    <div>
+        <table class="table">
+            <tr>
+                <th>Date</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="visit in client.history">
+                <td>{{ visit.date }}</td>
+                <td>
+                    <div ng-repeat="detail in visit.details">
+                        {{ detail.stylist }}/{{ detail.service }}/{{ detail.room }}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h3>Add new Visit</h3>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-3">Date</label>
+                <div class="col-md-3">
+                    <input class="form-control" ng-model="newvisit.date"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3">Add Service</label>
+
+                <div class="col-md-3">
+
+                    <select class="form-control col-md-3" ng-model="newvisit.details[0].service" ng-change="getstylistsandrooms()">
+                        <option ng-repeat="svc in services" value="{{ svc._id }}">{{ svc.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3">Add Stylist</label>
+                <div class="col-md-3">
+                    <select class="form-control col-md-3" ng-model="newvisit.details[0].stylist">
+                        <option ng-repeat="stylist in stylists" value="{{ stylist._id }}">{{ stylist.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3">Add Room</label>
+                <div class="col-md-3">
+                    <select class="form-control col-md-3" ng-model="newvisit.details[0].room">
+                        <option ng-repeat="room in rooms" value="{{ room._id }}">{{ room.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3">Notes</label>
+                <div class="col-md-3">
+                    <input class="form-control" ng-model="newvisit.details[0].notes"/>
+                </div>
+            </div>
+            <button class="btn btn-default" type="submit" ng-click="addnewvisit(newvisit)">New Visit</button>
+        </form>
+    </div>
+</div>
