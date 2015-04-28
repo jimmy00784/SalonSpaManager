@@ -1,5 +1,6 @@
 package controllers
 
+import models.VisitDetail
 import play.api.libs.json.Json
 import reactivemongo.bson.{BSONArray, BSONDocument}
 
@@ -28,10 +29,12 @@ object Client extends Controller with MongoController {
   }
 
   def get(id:String) = Action.async {
-    collClient.find(BSONDocument("_id" -> id)).one[models.Client].map{
+
+    collClient.find(BSONDocument("_id" -> id),BSONDocument("history" -> 0)).one[models.Client].map{
       case Some(client) => Ok(Json.toJson(client))
       case None => NotFound
     }
+
   }
 
   def getbyname(name:String) = Action.async {
@@ -168,10 +171,72 @@ object Client extends Controller with MongoController {
    */
 
   def getvisits(id:String) = Action.async {
-    collClient.find(BSONDocument("_id" -> id)).one[models.Client].map{
-      case Some(client) => Ok(Json.toJson(client))
-      case None => NotFound
+
+    for {
+      services <- Service.collService.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      optclient <- collClient.find(BSONDocument("_id" -> id)).one[models.Client].map {
+        case Some(client) => {
+          val newclienthistory = client.history.map{
+            visit =>
+              models.Visit(visit.date,
+                visit.details.map{
+                  detail =>
+                    VisitDetail(stylists.foldLeft(""){(c,e) =>
+                      if(e._1 == detail.stylist) {
+                        e._2
+                      } else {
+                        c
+                      }
+                    },
+                      services.foldLeft(""){(c,e) =>
+                        if(e._1 == detail.service) {
+                          e._2
+                        } else {
+                          c
+                        }
+                      },
+                      rooms.foldLeft(""){(c,e) =>
+                        if(e._1 == detail.room) {
+                          e._2
+                        } else {
+                          c
+                        }
+                      }
+                      ,List(),"")
+
+                })
+          }
+          Some(models.Client(client._id,client.firstname,client.lastname,client.phone,client.email,newclienthistory))
+        }
+        case None => None
+      }
+    } yield {
+      optclient match {
+        case Some(client) => Ok(Json.toJson(client))
+        case None => NotFound
+      }
     }
+
   }
 
   def getvisit(id:String, visitid:Int) = Action.async {
