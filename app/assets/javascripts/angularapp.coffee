@@ -1,4 +1,4 @@
-ssmApp = angular.module "ssmApp",["ngRoute","SalonServices"]
+ssmApp = angular.module "ssmApp",["ui.bootstrap","ngRoute","SalonServices"]
 
 ssmApp.config ($routeProvider,$locationProvider) ->
     $routeProvider.when '/product', {

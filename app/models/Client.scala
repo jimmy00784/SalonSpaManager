@@ -113,7 +113,7 @@ object Visit {
 
   val form = Form(
     mapping(
-      fldDate -> date("MM-dd-yyyy HH:mm a"),
+      fldDate -> date("M-d-yyyy h:m a"),
       fldDetails -> list(VisitDetail.form.mapping)
     )(Visit.apply)(Visit.unapply)
   )

@@ -101,12 +101,16 @@ DELETE /client/:id/email/:emailid   controllers.Client.delemail(id:String,emaili
 
 #Client Visit Detail
 GET    /client/:id/visit            controllers.Client.getvisits(id:String)
-GET    /client/:id/visit/:vid       controllers.Client.getvisit(id:String,vid:Int)
 POST   /client/:id/visit            controllers.Client.addvisit(id:String)
+GET    /client/:id/visit/:vid       controllers.Client.getvisit(id:String,vid:Int)
 POST   /client/:id/visit/:vid       controllers.Client.modvisit(id:String,vid:Int)
-POST   /client/:id/visit/:vid/product       controllers.Client.addproduct(id:String,vid:Int)
-POST   /client/:id/visit/:vid/product/:prd  controllers.Client.modproduct(id:String,vid:Int,prd:Int)
-DELETE /client/:id/visit/:vid/product/:prd  controllers.Client.delproduct(id:String,vid:Int,prd:Int)
+GET    /client/:id/visit/:vid/:idx  controllers.Client.getvisitdetail(id:String,vid:Int,idx:Int)
+POST   /client/:id/visit/:vid/detail    controllers.Client.addvisitdetail(id:String,vid:Int)
+POST   /client/:id/visit/:vid/:idx  controllers.Client.modvisitdetail(id:String,vid:Int,idx:Int)
+POST   /client/:id/visit/:vid/:idx/product       controllers.Client.addproduct(id:String,vid:Int,idx:Int)
+POST   /client/:id/visit/:vid/:idx/:prd  controllers.Client.modproduct(id:String,vid:Int,idx:Int,prd:Int)
+DELETE /client/:id/visit/:vid/:idx/:prd  controllers.Client.delproduct(id:String,vid:Int,idx:Int,prd:Int)
+DELETE /client/:id/visit/:vid/:idx controllers.Client.delvisitdetail(id:String,vid:Int,idx:Int)
 DELETE /client/:id/visit/:vid       controllers.Client.delvisit(id:String,vid:Int)
 
 # Map static resources from the /public folder to the /assets URL path

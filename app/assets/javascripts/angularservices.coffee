@@ -49,7 +49,10 @@ ssmSvc.factory "Client", ($resource) ->
         getvisit: { url: '/client/:id/visit/:visit', method: 'GET'},
         addvisit: { url: '/client/:id/visit', method: 'POST' },
         updatevisit: { url: '/client/:id/visit/:visit', method: 'POST'},
-        addproduct:  { url: '/client/:id/visit/:visit/product', method: 'POST'},
-        updateproduct: { url: '/client/:id/visit/:visit/product/:product', method: 'POST'},
-        removeproduct: { url: '/client/:id/visit/:visit/product/:product', method: 'DELETE'}
+        getvisitdetail: { url: '/client/:id/visit/:visit/detail', method: 'GET'},
+        addvisit: { url: '/client/:id/visit/:visit/detail', method: 'POST' },
+        updatevisit: { url: '/client/:id/visit/:visit/:detail', method: 'POST'},
+        addproduct:  { url: '/client/:id/visit/:visit/:detail/product', method: 'POST'},
+        updateproduct: { url: '/client/:id/visit/:visit/:detail/:product', method: 'POST'},
+        removeproduct: { url: '/client/:id/visit/:visit/:detail/:product', method: 'DELETE'}
     }

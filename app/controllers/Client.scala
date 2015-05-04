@@ -171,7 +171,6 @@ object Client extends Controller with MongoController {
    */
 
   def getvisits(id:String) = Action.async {
-
     for {
       services <- Service.collService.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
         list =>
@@ -240,23 +239,95 @@ object Client extends Controller with MongoController {
   }
 
   def getvisit(id:String, visitid:Int) = Action.async {
-    collClient.find(BSONDocument("_id" -> id,"history." + visitid.toString -> 1)).one[models.Client].map{
+    getvisitfut(id, visitid).map {
       case Some(client) => Ok(Json.toJson(client))
       case None => NotFound
     }
   }
+  def getvisitfut(id:String, visitid:Int) = {
+
+    for {
+      services <- Service.collService.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+        list =>
+          list.map{
+            item =>
+              (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
+          }
+      }
+      optclient <- collClient.find(
+        BSONDocument("_id" -> id,"history." + visitid.toString -> BSONDocument("$type" -> 3)),
+        BSONDocument("firstname" ->1, "lastname" -> 1,"phone" -> 1,"email" -> 1, "history.$" -> 1)).one[models.Client].map {
+        case Some(client) => {
+          val newclienthistory = client.history.map{
+            visit =>
+              models.Visit(visit.date,
+                visit.details.map{
+                  detail =>
+                    VisitDetail(stylists.foldLeft(""){(c,e) =>
+                      if(e._1 == detail.stylist) {
+                        e._2
+                      } else {
+                        c
+                      }
+                    },
+                      services.foldLeft(""){(c,e) =>
+                        if(e._1 == detail.service) {
+                          e._2
+                        } else {
+                          c
+                        }
+                      },
+                      rooms.foldLeft(""){(c,e) =>
+                        if(e._1 == detail.room) {
+                          e._2
+                        } else {
+                          c
+                        }
+                      }
+                      ,List(),"")
+
+                })
+          }
+          Some(models.Client(client._id,client.firstname,client.lastname,client.phone,client.email,newclienthistory))
+        }
+        case None => None
+      }
+    } yield {
+      optclient
+    }
+  }
+
+
 
   def addvisit(id:String) = Action.async { implicit request =>
     models.Visit.form.bindFromRequest.fold(
       hasErrors => Future successful BadRequest(hasErrors.errorsAsJson),
       visit => {
-        collClient.update(BSONDocument("_id" -> id),BSONDocument("$push" -> BSONDocument("history" -> visit))).map{
-          lasterror =>
-            if (lasterror.ok)
-              Accepted
-            else
-              BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+        for {
+          lasterror <- collClient.update(BSONDocument("_id" -> id), BSONDocument("$push" -> BSONDocument("history" -> visit)))
+          optclient <- collClient.find(BSONDocument("_id" -> id)).one[models.Client] if lasterror.ok
+          visit <- getvisitfut(id,optclient.get.history.length - 1) if optclient.isDefined
+        } yield {
+          visit match {
+            case Some(client) => Ok(Json.toJson(client.history.head))
+            case None => BadRequest
+          }
         }
+
       }
     )
   }
@@ -270,18 +341,38 @@ object Client extends Controller with MongoController {
   }
 
   /**
+   * Visit Details
+   */
+
+  def getvisitdetail(id:String,vid:Int,idx:Int) = Action.async { implicit request =>
+    Future successful Ok
+  }
+
+  def addvisitdetail(id:String,vid:Int) = Action.async { implicit request =>
+    Future successful Ok
+  }
+
+  def modvisitdetail(id:String,vid:Int,idx:Int) = Action.async { implicit request =>
+    Future successful Ok
+  }
+
+  def delvisitdetail(id:String,vid:Int,idx:Int) = Action.async { implicit request =>
+    Future successful Ok
+  }
+
+  /**
    * Visit Products
    */
 
-  def addproduct(id:String,visitid:Int) = Action.async { implicit request =>
+  def addproduct(id:String,visitid:Int,detailid:Int) = Action.async { implicit request =>
     Future successful Ok
   }
 
-  def modproduct(id:String,visitid:Int,product:Int) = Action.async { implicit request =>
+  def modproduct(id:String,visitid:Int,detailid:Int,productid:Int) = Action.async { implicit request =>
     Future successful Ok
   }
 
-  def delproduct(id:String,visitid:Int,product:Int) = Action.async { implicit request =>
+  def delproduct(id:String,visitid:Int,detailid:Int,productid:Int) = Action.async { implicit request =>
     Future successful Ok
   }
 }

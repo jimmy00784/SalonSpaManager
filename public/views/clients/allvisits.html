@@ -14,13 +14,20 @@
             <tr>
                 <th>Date</th>
                 <th>Details</th>
+                <th>Action</th>
             </tr>
             <tr ng-repeat="visit in client.history">
-                <td>{{ visit.date }}</td>
+                <td>{{ formatdate(visit.date) }}</td>
                 <td>
                     <div ng-repeat="detail in visit.details">
                         {{ detail.stylist }}/{{ detail.service }}/{{ detail.room }}
                     </div>
+                </td>
+                <td>
+                    <a href="#/client/{{client._id}}/visit/{{$index}}">
+                        <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                    </a>
+
                 </td>
             </tr>
         </table>
