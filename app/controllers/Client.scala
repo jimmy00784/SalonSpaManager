@@ -14,6 +14,7 @@ import reactivemongo.api.collections.bson._
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
+import reactivemongo.api.ReadPreference
 /**
  * Created by karim on 4/26/15.
  */
@@ -32,7 +33,7 @@ class Client extends Controller with ReactiveMongoComponents with ClientCollecti
    */
 
   def index = Action.async {
-    collClient.find(BSONDocument(),clientwohistory).cursor[models.Client].collect[List]().map{
+    collClient.find(BSONDocument(),clientwohistory).cursor[models.Client](ReadPreference.Primary).collect[List]().map{
       list =>
         Ok(Json.toJson(list))
     }
@@ -59,7 +60,7 @@ class Client extends Controller with ReactiveMongoComponents with ClientCollecti
             )
           )
       ),clientwohistory
-    ).cursor[models.Client].collect[List]().map{
+    ).cursor[models.Client](ReadPreference.Primary).collect[List]().map{
       list =>
         Ok(Json.toJson(list))
     }
@@ -182,21 +183,21 @@ class Client extends Controller with ReactiveMongoComponents with ClientCollecti
 
   def getvisits(id:String) = Action.async {
     for {
-      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>
               (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
           }
       }
-      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>
               (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
           }
       }
-      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>
@@ -257,21 +258,21 @@ class Client extends Controller with ReactiveMongoComponents with ClientCollecti
   def getvisitfut(id:String, visitid:Int) = {
 
     for {
-      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>
               (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
           }
       }
-      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      stylists <- Stylist.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>
               (item.getAs[String]("_id").getOrElse("") -> item.getAs[String]("name").getOrElse(""))
           }
       }
-      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      rooms <- Room.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor(ReadPreference.Primary).collect[List]().map{
         list =>
           list.map{
             item =>

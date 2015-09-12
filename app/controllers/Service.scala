@@ -6,6 +6,7 @@ import play.api.Play._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, ReactiveMongoModule, MongoController}
+import reactivemongo.api.ReadPreference
 import reactivemongo.bson.{BSONDocument}
 import reactivemongo.api.collections.bson._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,7 +27,7 @@ class Service extends Controller with ReactiveMongoComponents with ServiceCollec
 
   lazy val collService = Service.coll
 
-  def findAll = collService.find(BSONDocument()).cursor[models.Service].collect[List]()
+  def findAll = collService.find(BSONDocument()).cursor[models.Service](ReadPreference.Primary).collect[List]()
 
   def index = Action.async {
     findAll.map {

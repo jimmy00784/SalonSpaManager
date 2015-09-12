@@ -6,6 +6,7 @@ import play.api.Play._
 import play.api.mvc.{Controller, Action}
 import play.modules.reactivemongo.{ReactiveMongoComponents, ReactiveMongoApi, MongoController}
 import play.api.libs.json._
+import reactivemongo.api.ReadPreference
 import reactivemongo.api.collections.bson._
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.{Future}
@@ -26,7 +27,7 @@ trait StylistsCollection extends WithCollection {
 abstract class Servicer extends Controller with WithCollection {
 
   def index = Action.async {
-    coll.find(BSONDocument()).cursor[models.Servicer].collect[List]().map{
+    coll.find(BSONDocument()).cursor[models.Servicer](ReadPreference.Primary).collect[List]().map{
       servicers => Ok(Json.toJson(servicers))
     }
   }

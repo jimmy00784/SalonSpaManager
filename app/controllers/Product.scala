@@ -5,6 +5,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, Controller}
 import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, ReactiveMongoModule, MongoController}
 import play.api.libs.json._
+import reactivemongo.api.ReadPreference
 import reactivemongo.api.collections.bson._
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import scala.concurrent._
@@ -26,7 +27,7 @@ class Product extends Controller with ReactiveMongoComponents with ProductCollec
 
   lazy val collProduct = Product.coll
 
-  def findAll = collProduct.find(BSONDocument()).cursor[models.Product].collect[List]()
+  def findAll = collProduct.find(BSONDocument()).cursor[models.Product](ReadPreference.Primary).collect[List]()
 
   def index = Action.async {
     findAll.map{
