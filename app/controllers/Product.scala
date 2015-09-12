@@ -1,21 +1,30 @@
 package controllers
 
+import javax.inject.Inject
+
 import play.api.mvc.{Action, Controller}
-import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, ReactiveMongoModule, MongoController}
 import play.api.libs.json._
-import reactivemongo.api.collections.default._
-import reactivemongo.bson.BSONDocument
+import reactivemongo.api.collections.bson._
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
 import models.Product._
 
 /**
  * Created by karim on 4/23/15.
  */
-object Product extends Controller with MongoController {
 
-  lazy val collProduct = db("products")
+trait ProductCollection extends WithCollection {
+  lazy val coll = reactiveMongoApi.db("products")
+}
+
+class Product extends Controller with ReactiveMongoComponents with ProductCollection {
+
+  lazy val collProduct = Product.coll
 
   def findAll = collProduct.find(BSONDocument()).cursor[models.Product].collect[List]()
 
@@ -41,7 +50,7 @@ object Product extends Controller with MongoController {
             if(lasterror.ok)
               Accepted(Json.toJson(product))
             else
-              BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+              BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
     )
   }
@@ -50,12 +59,12 @@ object Product extends Controller with MongoController {
     models.Product.form.bindFromRequest.fold(
       hasErrors => Future.successful(BadRequest(hasErrors.errorsAsJson)),
       product =>
-        collProduct.save(product).map{
+        collProduct.update(BSONDocument("_id" -> BSONObjectID(id)), product).map{
           lasterror =>
             if(lasterror.ok)
               Accepted
             else
-              NotAcceptable(Json.toJson(lasterror.err.getOrElse("")))
+              NotAcceptable(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
     )
   }
@@ -66,7 +75,9 @@ object Product extends Controller with MongoController {
         if(lasterror.ok)
           Accepted
         else
-          NotAcceptable(Json.toJson(lasterror.err.getOrElse("")))
+          NotAcceptable(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 }
+
+object Product extends ProductCollection

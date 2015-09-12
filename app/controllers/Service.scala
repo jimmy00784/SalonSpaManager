@@ -1,20 +1,30 @@
 package controllers
 
+import javax.inject.Inject
+
+import play.api.Play._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, ReactiveMongoModule, MongoController}
 import reactivemongo.bson.{BSONDocument}
-import reactivemongo.api.collections.default._
+import reactivemongo.api.collections.bson._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.modules.reactivemongo.json.BSONFormats._
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
 /**
  * Created by karim on 4/25/15.
  */
-object Service extends Controller with MongoController {
 
-  lazy val collService = db("services")
+trait ServiceCollection extends WithCollection {
+  lazy val coll = reactiveMongoApi.db("services")
+}
+
+class Service extends Controller with ReactiveMongoComponents with ServiceCollection{
+
+  lazy val collService = Service.coll
 
   def findAll = collService.find(BSONDocument()).cursor[models.Service].collect[List]()
 
@@ -35,12 +45,12 @@ object Service extends Controller with MongoController {
     models.Service.form.bindFromRequest.fold(
       hasErrors => Future successful BadRequest(hasErrors.errorsAsJson),
       service =>
-        collService.save(service).map{
+        collService.insert(service).map{
           lasterror =>
             if(lasterror.ok)
               Ok(Json toJson service)
             else
-              NotAcceptable(Json.toJson(lasterror.err.getOrElse("")))
+              NotAcceptable(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
     )
   }
@@ -51,7 +61,7 @@ object Service extends Controller with MongoController {
         BSONDocument("_id" -> id),
         BSONDocument("$addToSet" -> BSONDocument("products" -> product)))
       optsvc <- collService.find(BSONDocument("_id" -> id)).one[models.Service] if lasterror.ok
-      products <- Product.collProduct.find(
+      products <- Product.coll.find(
         BSONDocument("_id" ->
           BSONDocument("$in" -> optsvc.get.products))
       ).cursor[models.Product].collect[List]() if optsvc.isDefined
@@ -66,7 +76,7 @@ object Service extends Controller with MongoController {
         BSONDocument("_id" -> id),
         BSONDocument("$pull" -> BSONDocument("products" -> product)))
       optsvc <- collService.find(BSONDocument("_id" -> id)).one[models.Service] if lasterror.ok
-      products <- Product.collProduct.find(
+      products <- Product.coll.find(
         BSONDocument("_id" ->
           BSONDocument("$in" -> optsvc.get.products))
       ).cursor[models.Product].collect[List]() if optsvc.isDefined
@@ -94,7 +104,7 @@ object Service extends Controller with MongoController {
             if(lasterror.ok)
               Accepted
             else
-              NotAcceptable(Json.toJson(lasterror.err.getOrElse("")))
+              NotAcceptable(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
     )
   }
@@ -105,7 +115,9 @@ object Service extends Controller with MongoController {
         if(lasterror.ok)
           Accepted
         else
-          NotAcceptable(Json.toJson(lasterror.err.getOrElse("")))
+          NotAcceptable(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 }
+
+object Service extends ServiceCollection

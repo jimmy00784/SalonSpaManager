@@ -1,20 +1,30 @@
 package controllers
 
+import javax.inject.Inject
+
 import models.VisitDetail
+import play.api.Play._
 import play.api.libs.json.Json
 import reactivemongo.bson.{BSONArray, BSONDocument}
 
 import scala.concurrent._
 import play.api.mvc.{Controller, Action}
-import play.modules.reactivemongo.MongoController
-import reactivemongo.api.collections.default._
+import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, ReactiveMongoModule, MongoController}
+import reactivemongo.api.collections.bson._
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 /**
  * Created by karim on 4/26/15.
  */
-object Client extends Controller with MongoController {
 
-  lazy val collClient = db("clients")
+trait ClientCollection extends WithCollection {
+  lazy val coll = reactiveMongoApi.db("clients")
+}
+
+class Client extends Controller with ReactiveMongoComponents with ClientCollection {
+
+  lazy val collClient = Client.coll
   val clientwohistory = BSONDocument() ++ (models.Client.fldHistory -> 0)
 
   /**
@@ -64,7 +74,7 @@ object Client extends Controller with MongoController {
             if(lasterror.ok)
               Accepted
             else
-              BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+              BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
       }
     )
@@ -84,7 +94,7 @@ object Client extends Controller with MongoController {
             if(lasterror.ok)
               Accepted
             else
-              BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+              BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
         }
       }
     )
@@ -96,7 +106,7 @@ object Client extends Controller with MongoController {
         if(lasterror.ok)
           Accepted
         else
-          BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+          BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 
@@ -113,7 +123,7 @@ object Client extends Controller with MongoController {
         if (lasterror.ok)
           Accepted
         else
-          BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+          BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 
@@ -131,7 +141,7 @@ object Client extends Controller with MongoController {
       if(lasterror.ok)
         Accepted
       else
-        BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+        BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 
@@ -144,7 +154,7 @@ object Client extends Controller with MongoController {
         if (lasterror.ok)
           Accepted
         else
-          BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+          BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 
@@ -162,7 +172,7 @@ object Client extends Controller with MongoController {
       if(lasterror.ok)
         Accepted
       else
-        BadRequest(Json.toJson(lasterror.err.getOrElse("")))
+        BadRequest(Json.toJson(lasterror.errmsg.getOrElse("")))
     }
   }
 
@@ -172,7 +182,7 @@ object Client extends Controller with MongoController {
 
   def getvisits(id:String) = Action.async {
     for {
-      services <- Service.collService.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
         list =>
           list.map{
             item =>
@@ -247,7 +257,7 @@ object Client extends Controller with MongoController {
   def getvisitfut(id:String, visitid:Int) = {
 
     for {
-      services <- Service.collService.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
+      services <- Service.coll.find(BSONDocument(),BSONDocument("name" -> 1)).cursor.collect[List]().map{
         list =>
           list.map{
             item =>
@@ -376,3 +386,5 @@ object Client extends Controller with MongoController {
     Future successful Ok
   }
 }
+
+object Client extends ClientCollection
